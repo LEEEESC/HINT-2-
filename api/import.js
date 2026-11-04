@@ -41,3 +41,10 @@ export async function POST(request) {
     return Response.json(job,{headers});
   }catch(e){console.warn('Import rejected:',e.name);return Response.json({error:'지원하는 사이트의 올바른 공고 URL을 입력해 주세요.'},{status:400,headers});}
 }
+
+// Metadata reads are safe to repeat; GET also makes deployment health checks possible.
+export async function GET(request) {
+  const url=new URL(request.url),jobURL=url.searchParams.get('url');
+  if(!jobURL)return Response.json({ok:true,app:'hint-job-hub',storage:'device',version:1},{headers:{'Cache-Control':'no-store'}});
+  return POST(new Request(url.origin+url.pathname,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:jobURL})}));
+}

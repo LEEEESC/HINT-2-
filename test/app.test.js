@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {validateURL,fetchHTML,POST} from '../api/import.js';import {parseJob_} from '../lib/parser.js';import {createService,normalizeURL} from '../public/storage.js';
+import {validateURL,fetchHTML,POST,GET} from '../api/import.js';import {parseJob_} from '../lib/parser.js';import {createService,normalizeURL} from '../public/storage.js';
 function memory(){let rows=[];return {all:async()=>structuredClone(rows),mutate:async fn=>{const copy=structuredClone(rows);const r=fn(copy);rows=copy;return structuredClone(r);}};}
 const url='https://www.saramin.co.kr/job/1';
 test('URL allowlist rejects credentials, ports and lookalike domains',()=>{assert.equal(validateURL(url+'#x').url,url);assert.equal(normalizeURL(url).platform,'사람인');for(const bad of ['http://saramin.co.kr','https://saramin.co.kr.evil.com/a','https://user:pw@jobkorea.co.kr/a','https://127.0.0.1/a','https://jobkorea.co.kr:8080/a']){assert.throws(()=>validateURL(bad));assert.throws(()=>normalizeURL(bad));}});
@@ -14,3 +14,5 @@ test('auto import, dedupe, file preservation, trash/restore/delete, pagination',
 });
 test('offline import keeps URL without invented metadata',async()=>{const api=createService(memory(),async()=>{throw new Error('offline')});const j=await api('importJob',url);assert(j.id);assert.equal(j.company,'');assert.equal((await api('listJobs',{})).jobs.length,1);});
 test('invalid file causes no partial write',async()=>{const store=memory(),api=createService(store,async()=>({company:'회사',title:'공고',role:'조립'}));const j=await api('importJob',url);await assert.rejects(()=>api('saveJob',{...j,company:'바뀌면 안 됨',status:'관심공고',file:{name:'bad.exe',base64:'YQ=='}}));assert.equal((await store.all())[0].company,'회사');});
+
+test('deployment health endpoint reports device storage',async()=>{const r=await GET(new Request('https://app.vercel.app/api/import'));assert.equal(r.status,200);assert.equal((await r.json()).storage,'device');});
