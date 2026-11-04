@@ -1,0 +1,6 @@
+import http from 'node:http';import {readFile} from 'node:fs/promises';import path from 'node:path';import {POST} from '../api/import.js';
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.webmanifest':'application/manifest+json','.svg':'image/svg+xml','.png':'image/png'};
+http.createServer(async(req,res)=>{try{
+ if(req.url==='/api/import'&&req.method==='POST'){let data='';for await(const b of req){data+=b;if(data.length>4096){res.writeHead(413);res.end();return;}}const result=await POST(new Request('http://localhost:3000/api/import',{method:'POST',body:data,headers:{'content-type':'application/json'}}));res.writeHead(result.status,Object.fromEntries(result.headers));res.end(await result.text());return;}
+ const pathname=decodeURIComponent(new URL(req.url,'http://localhost').pathname);const file=path.resolve('public','.'+(pathname==='/'?'/index.html':pathname));if(!file.startsWith(path.resolve('public')+path.sep)){res.writeHead(403);res.end();return;}res.setHeader('Content-Type',types[path.extname(file)]||'application/octet-stream');res.end(await readFile(file));
+}catch(_){res.writeHead(404);res.end('Not found');}}).listen(3000,'127.0.0.1',()=>console.log('Job Hub: http://localhost:3000'));

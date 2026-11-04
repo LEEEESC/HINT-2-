@@ -1,0 +1,14 @@
+{
+  "name": "hint-job-hub",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "build": "node scripts/build.js",
+    "test": "node --test",
+    "dev": "node scripts/dev.js"
+  }
+}

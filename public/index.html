@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><title>취업 정보 허브</title><meta name="theme-color" content="#205bce"><link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#18243b;font:16px/1.6 system-ui,sans-serif}main{max-width:1200px;margin:auto;padding:24px}h1{margin:0}h2{font-size:20px;margin-top:0}.muted{font-size:14px;color:#596579}section,aside{background:#fff;border:1px solid #dfe5ef;border-radius:16px;padding:22px;margin-top:18px}.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:20px}.row{display:flex;gap:10px;align-items:center}.row input{flex:1;min-width:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{display:block;font-size:14px;font-weight:600;margin:12px 0 5px}input,select,button{font:inherit}input,select{width:100%;padding:11px;border:1px solid #c7cfdd;border-radius:8px;min-height:45px}button,.link{display:inline-block;border:0;border-radius:8px;background:#205bce;color:#fff;padding:11px 16px;cursor:pointer;text-decoration:none}button:disabled{opacity:.5;cursor:wait}.secondary{background:#eaf0fb;color:#174ba2}.company{display:block;width:100%;text-align:left;background:#edf3ff;color:#174ba2;font-weight:700}.item{padding:14px 0;border-bottom:1px solid #e4e9f1}.item p{margin:5px 0}#message{white-space:pre-wrap;padding:12px 0}#message.error{color:#b42318}#warning{white-space:pre-wrap;color:#805000}#detail{overflow-wrap:anywhere}dl{display:grid;grid-template-columns:90px 1fr;gap:8px}dt{color:#596579}dd{margin:0;white-space:pre-wrap}iframe{width:100%;height:420px;border:1px solid #dce2ed;margin-top:12px}fieldset{border:0;padding:0;margin:0;min-width:0}[hidden]{display:none!important}:focus-visible{outline:3px solid #80a8ff;outline-offset:2px}@media(max-width:800px){.layout,.grid{grid-template-columns:1fr}.row{flex-wrap:wrap}main{padding:16px}}
+.companyRow{display:flex;gap:8px}.companyRow .company{flex:1;min-width:0}.danger{background:#fff0ef;color:#b42318}.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs [aria-selected="true"]{background:#205bce;color:#fff}.trashIcon{flex:0 0 48px;padding:10px}.currentFile{overflow-wrap:anywhere}
+.appHeader{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}.eyebrow{font-size:12px;letter-spacing:.18em;color:#205bce;font-weight:800}.storageNotice{background:#eaf0fb;border-radius:12px;padding:12px 16px;color:#234371;font-size:14px}h1{letter-spacing:-.04em}.card{box-shadow:0 10px 32px #17233b08}@media(max-width:500px){.companyRow{flex-wrap:wrap}.companyRow .company{min-width:160px}.appHeader .row{gap:6px}.appHeader button,.appHeader .link{font-size:13px;padding:9px}}
+</style>
+</head>
+<body>
+<main>
+<header class="appHeader"><div><span class="eyebrow">JOB HUB</span><h1>취업 정보 허브</h1></div><div class="row"><button id="installBtn" class="secondary">앱 설치 안내</button><button id="backupBtn" class="secondary">백업 다운로드</button><label class="link secondary" for="restoreFile" style="margin:0;cursor:pointer">백업 복원</label><input id="restoreFile" type="file" accept=".json" hidden></div></header><p class="storageNotice">기기 저장 모드 · 공고와 자기소개서는 현재 브라우저에 보관됩니다. 다른 기기와 자동 동기화되지 않으므로 백업을 보관하세요.</p>
+<p class="muted">공고 URL을 불러오면 저장한 공고에 자동으로 추가됩니다.</p>
+<section id="searchSection">
+<h2>공고 URL 검색</h2>
+<label for="searchUrl">개별 채용 공고 주소</label>
+<div class="row"><input id="searchUrl" type="url" placeholder="https://..." autocomplete="off"><button id="importBtn" disabled>공고 불러오기</button></div>
+<p class="muted">사람인 · 잡코리아 · 자소설닷컴 · 인크루트 · 디맨드. 자동 수집이 제한된 항목은 저장 후 보완할 수 있습니다.</p>
+</section>
+<div id="message" role="status" aria-live="polite">연결을 확인하고 있습니다.</div>
+<div class="layout"><div>
+<section id="editorSection">
+<h2>공고 정보 수정 · 파일 첨부</h2><p id="warning"></p>
+<form id="form"><fieldset id="fields" disabled>
+<label for="platform">채용 플랫폼</label><input id="platform" readonly>
+<div class="grid"><div><label for="company">기업명</label><input id="company" maxlength="200" required></div>
+<div><label for="deadline">마감 일자</label><input id="deadline" type="date" min="1900-01-01" max="9999-12-31"></div></div>
+<p class="muted">상시채용·마감일 미확인 공고는 날짜를 비워 두세요. 마감 시각은 원문을 확인하세요.</p>
+<label for="title">공고명</label><input id="title" maxlength="300" required>
+<label for="role">지원 직무</label><input id="role" maxlength="200" required>
+<label for="status">지원 상태</label><select id="status" required></select>
+<label for="file">자기소개서 파일 첨부 (선택)</label><input id="file" type="file" accept=".pdf,.doc,.docx,.hwp,.hwpx,.txt">
+<p class="muted">PDF · Word · 한글 · TXT / 최대 5MB. 새 파일을 선택하지 않으면 기존 첨부파일이 유지됩니다.</p>
+<p id="currentFile" class="currentFile"></p>
+<div class="row"><button type="submit">변경 내용 · 파일 저장</button><a id="source" class="link secondary" target="_blank" rel="noopener noreferrer" hidden>원문 확인 ↗</a></div>
+</fieldset></form>
+</section>
+<section>
+<nav class="tabs" aria-label="공고 보관함">
+<button id="activeTab" class="secondary" disabled>저장한 공고</button>
+<button id="trashTab" class="secondary" disabled>휴지통</button>
+</nav>
+<h2 id="listTitle">저장한 공고</h2>
+<p id="listHint" class="muted">기업명을 누르면 상세를 볼 수 있습니다. 휴지통 버튼으로 공고를 이동할 수 있습니다.</p>
+<div id="jobs"></div><button id="more" class="secondary" hidden>더 보기</button>
+</section></div>
+<aside id="detail"><h2>공고 상세</h2><p class="muted">기업명 버튼을 눌러 주세요.</p></aside>
+</div></main>
+<script type="module" src="/app.js"></script>
+</body></html>
